@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendrier Chèque Énergie 2025</title>
+    <!-- Chargement de Tailwind CSS pour le style -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Police Avenir par défaut */
+        body {
+            font-family: "Avenir", sans-serif;
+        }
+        
+        /* Correction pour la flèche du sélecteur non stylisée par Tailwind */
+        select {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.5rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            padding-right: 2.5rem; /* Espace pour la flèche */
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+
+    <!-- Carte principale avec rounded-[10px] -->
+    <div class="bg-white p-6 sm:p-8 rounded-[10px] shadow-lg w-full max-w-lg">
+        
+        <!-- Titre principal: 18px et couleur #5A52FF -->
+        <h1 class="text-[18px] font-bold text-center text-[#5A52FF] mb-6">
+            Calendrier d'envoi du Chèque Énergie 2025
+        </h1>
+        
+        <!-- Paragraphe: 16px -->
+        <p class="text-gray-700 text-center mb-6 text-[16px]">
+            Sélectionnez votre département ou votre zone pour connaître la semaine d'envoi estimée.
+        </p>
+
+        <!-- Sélecteur de département -->
+        <div class="mb-4">
+            <!-- Label: 16px et couleur #212430 -->
+            <label for="departement-select" class="block text-[16px] font-medium text-[#212430] mb-2">
+                Votre département :
+            </label>
+            <!-- Select: 16px, rounded-[5px] et couleurs focus personnalisées -->
+            <select id="departement-select" class="w-full p-3 border border-gray-300 rounded-[5px] shadow-sm text-[16px] focus:ring-[#5A52FF] focus:border-[#5A52FF]">
+                <option value="">-- Choisissez un département --</option>
+                <!-- Les options seront ajoutées ici par JavaScript -->
+            </select>
+        </div>
+
+        <!-- Bouton: 16px, rounded-[5px], p-3 (padding), w-[300px] centré et couleur #5A52FF -->
+        <button id="check-button" class="w-[300px] mx-auto block bg-[#5A52FF] text-white font-bold p-3 rounded-[5px] text-[16px] hover:bg-[#4a42e0] transition-colors duration-200 shadow-md">
+            Vérifier la date d'envoi
+        </button>
+
+        <!-- Zone de résultat: rounded-[5px] -->
+        <div id="result-box" class="mt-6 p-5 rounded-[5px] text-center hidden">
+            <!-- Titre résultat: 18px -->
+            <h3 id="result-title" class="text-[18px] font-semibold"></h3>
+            <!-- Date résultat: 16px -->
+            <p id="result-date" class="text-[16px]"></p>
+        </div>
+
+        <!-- Notes importantes -->
+        <div class="mt-8 pt-4 border-t border-gray-200">
+            <!-- Titre info: 18px et couleur #212430 -->
+            <h4 class="font-semibold text-[18px] text-[#212430] mb-2">Informations importantes :</h4>
+            <!-- Liste info: 16px -->
+            <ul class="list-disc list-inside text-[16px] text-gray-700 space-y-1">
+                <li>Ce calendrier concerne les envois de chèques énergie 2025 au format papier (hors pré-affectation).</li>
+                <li>Les délais de réception au domicile sont en général compris entre <strong>2 à 4 jours</strong> après la date d'envoi.</li>
+                <li>Les envois pour Grenoble et Strasbourg sont étalés sur plusieurs semaines (choisissez la zone correspondante).</li>
+            </ul>
+        </div>
+
+    </div>
+
+    <script>
+        // Données extraites du PDF
+        const datesEnvoi = {
+            "Semaine 45 : du lundi 3 au vendredi 7 novembre": [
+                "974-La Réunion", "971-Guadeloupe", "973-Guyane", "976-Mayotte", "978-Saint-Martin", "972-Martinique",
+                "93-Seine-Saint-Denis", "38000-Grenoble 1", "03-Allier", "58-Nièvre", "36-Indre", "08-Ardennes",
+                "52-Haute-Marne", "67000-Strasbourg 1", "10-Aube", "88-Vosges", "62-Pas-de-Calais", "02-Aisne",
+                "59-Nord", "80-Somme", "61-Orne", "23-Creuse", "47-Lot-et-Garonne", "24-Dordogne", "11-Aude",
+                "66-Pyrénées-Orientales", "09-Ariège", "30-Gard", "82-Tarn-et-Garonne", "65-Hautes-Pyrénées", "84-Vaucluse"
+            ],
+            "Semaine 46 : du lundi 10 au vendredi 14 novembre": [
+                "42-Loire", "07-Ardèche", "15-Cantal", "43-Haute-Loire", "26-Drôme", "38100-Grenoble 2",
+                "71-Saône-et-Loire", "70-Haute-Saône", "89-Yonne", "22-Côtes d'Armor", "18-Cher", "41-Loir-et-Cher",
+                "20-Corse", "67100-Strasbourg 2", "55-Meuse", "76-Seine-Maritime", "50-Manche", "16-Charente",
+                "19-Corrèze", "87-Haute-Vienne", "79-Deux-Sèvres", "86-Vienne", "17-Charente-Maritime", "46-Lot",
+                "34-Hérault", "48-Lozère", "81-Tarn", "12-Aveyron", "32-Gers", "53-Mayenne", "72-Sarthe",
+                "49-Maine-et-Loire", "85-Vendée", "04-Alpes de Haute-Provence", "05-Hautes-Alpes"
+            ],
+            "Semaine 47 : du lundi 17 au vendredi 21 novembre": [
+                "63-Puy-de-Dôme", "21-Côte-d'Or", "90-Territoire-de-Belfort", "39-Jura", "25-Doubs", "14-Calvados",
+                "27-Eure", "29-Finistère", "56-Morbihan", "35-Ille-et-Vilaine", "45-Loiret", "37-Indre-et-Loire",
+                "28-Eure-et-Loir", "57-Moselle", "51-Marne", "54-Meurthe-et-Moselle", "67200-Strasbourg 3",
+                "60-Oise", "95-Val-d'Oise", "64-Pyrénées-Atlantiques", "40-Landes", "13-Bouches-du-Rhône", "83-Var",
+                "06-Alpes-Maritimes"
+            ],
+            "Semaine 48 : du lundi 24 au vendredi 28 novembre": [
+                "94-Val-de-Marne", "77-Seine-et-Marne", "91-Essonne", "78-Yvelines", "92-Hauts-de-Seine", "75-Paris",
+                "33-Gironde", "31-Haute-Garonne", "44-Loire-Atlantique", "67-Reste Bas-Rhin", "68-Haut-Rhin",
+                "38-Reste Isère", "73-Savoie", "69-Rhône", "01-Ain", "74-Haute-Savoie"
+            ]
+        };
+
+        // Fonction pour formater l'affichage des noms
+        function formatDepartement(deptString) {
+            const match = deptString.match(/^([\d\w]+)-(.*)$/);
+            if (match && match.length === 3) {
+                return `${match[1]} - ${match[2]}`;
+            }
+            return deptString; // Fallback
+        }
+
+        // Crée une seule table de correspondance (Département -> Date)
+        const departementDateMap = {};
+        const tousLesDepartements = [];
+
+        for (const [date, departements] of Object.entries(datesEnvoi)) {
+            for (const dept of departements) {
+                departementDateMap[dept] = date;
+                tousLesDepartements.push(dept);
+            }
+        }
+
+        // Tri alphabétique des départements
+        tousLesDepartements.sort();
+
+        // Remplissage du sélecteur
+        const selectElement = document.getElementById('departement-select');
+        tousLesDepartements.forEach(dept => {
+            const option = document.createElement('option');
+            option.value = dept;
+            option.textContent = formatDepartement(dept); // Formaté pour l'affichage
+            selectElement.appendChild(option);
+        });
+
+        // Logique du bouton
+        const button = document.getElementById('check-button');
+        const resultBox = document.getElementById('result-box');
+        const resultTitle = document.getElementById('result-title');
+        const resultDate = document.getElementById('result-date');
+
+        button.addEventListener('click', () => {
+            const selectedDept = selectElement.value;
+            
+            if (!selectedDept) {
+                // Cas où rien n'est sélectionné
+                resultTitle.textContent = "Veuillez sélectionner un département";
+                resultDate.textContent = "";
+                // Utilisation des classes Tailwind avec rounded-[5px]
+                resultBox.className = "mt-6 p-5 rounded-[5px] text-center bg-yellow-100 text-yellow-800";
+                resultBox.classList.remove('hidden'); // Assurez-vous qu'il est visible
+                return;
+            }
+
+            const date = departementDateMap[selectedDept];
+
+            if (date) {
+                // Afficher le résultat
+                resultTitle.textContent = `Envoi estimé pour : ${formatDepartement(selectedDept)}`; // Formaté pour l'affichage
+                resultDate.textContent = date;
+                // Utilisation des couleurs personnalisées et rounded-[5px]
+                resultBox.className = "mt-6 p-5 rounded-[5px] text-center bg-[#E2E1FF] text-[#5A52FF]";
+                resultBox.classList.remove('hidden'); // Assurez-vous qu'il est visible
+            } else {
+                // Ne devrait pas arriver avec un select, mais par sécurité
+                resultTitle.textContent = "Département non trouvé";
+                resultDate.textContent = "Veuillez réessayer.";
+                // Utilisation des classes Tailwind avec rounded-[5px]
+                resultBox.className = "mt-6 p-5 rounded-[5px] text-center bg-red-100 text-red-800";
+                resultBox.classList.remove('hidden'); // Assurez-vous qu'il est visible
+            }
+        });
+
+    </script>
+</body>
+</html>
+
+
+
