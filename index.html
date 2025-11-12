@@ -9,7 +9,7 @@
     <style>
         /* Police Avenir par défaut */
         body {
-            font-family: "Avenir", sans-serif;
+            font-family: "Avenir", "Inter", sans-serif; /* Ajout d'Inter comme fallback */
         }
         
         /* Correction pour la flèche du sélecteur non stylisée par Tailwind */
@@ -25,10 +25,11 @@
         }
     </style>
 </head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+<!-- Modification : fond blanc, centré horizontalement (flex justify-center), padding vertical (py-8) -->
+<body class="bg-white flex justify-center py-8 px-4">
 
     <!-- Carte principale avec rounded-[10px] -->
-    <div class="bg-white p-6 sm:p-8 rounded-[10px] shadow-lg w-full max-w-lg">
+    <div class="bg-white p-6 sm:p-8 rounded-[10px] shadow-lg w-full max-w-lg border border-gray-200">
         
         <!-- Titre principal: 18px et couleur #5A52FF -->
         <h1 class="text-[18px] font-bold text-center text-[#5A52FF] mb-6">
@@ -54,7 +55,7 @@
         </div>
 
         <!-- Bouton: 16px, rounded-[5px], p-3 (padding), w-[300px] centré et couleur #5A52FF -->
-        <button id="check-button" class="w-[300px] mx-auto block bg-[#5A52FF] text-white font-bold p-3 rounded-[5px] text-[16px] hover:bg-[#4a42e0] transition-colors duration-200 shadow-md">
+        <button id="check-button" class="w-full sm:w-[300px] mx-auto block bg-[#5A52FF] text-white font-bold p-3 rounded-[5px] text-[16px] hover:bg-[#4a42e0] transition-colors duration-200 shadow-md">
             Vérifier la date d'envoi
         </button>
 
@@ -190,8 +191,3 @@
     </script>
 </body>
 </html>
-
-
-
-
-
