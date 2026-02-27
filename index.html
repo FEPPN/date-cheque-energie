@@ -164,16 +164,24 @@
         resultBox.classList.remove('hidden');
     }
 });
+            // On attend que le DOM soit chargé pour être sûr de trouver l'élément
+    window.addEventListener('DOMContentLoaded', () => {
+        const toolContainer = document.querySelector('.max-w-lg');
+        
+        if (toolContainer) {
             const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                trackTool('tool_visible');
-                observer.unobserve(entry.target); // Ne tracker qu'une seule fois
-            }
-        });
-    }, { threshold: 0.5 });
-    
-    observer.observe(document.querySelector('.max-w-lg'));
-    </script>
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        // On envoie tool_visible en tool_action pour ton setup universel GTM
+                        trackTool('tool_visible'); 
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.5 }); // Déclenche à 50% de visibilité
+
+            observer.observe(toolContainer);
+        }
+    });
+</script>
 </body>
 </html>
