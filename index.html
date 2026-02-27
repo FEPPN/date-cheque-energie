@@ -87,6 +87,15 @@
     </div>
 
     <script>
+        function trackTool(actionName, extraData = {}) {
+    const nom_du_tool = "date-cheque-energie";
+    window.parent.postMessage({
+        'event': 'tool_interaction',
+        'tool_name': nom_du_tool, 
+        'tool_action': actionName,
+        ...extraData
+    }, '*');
+}
         const datesEnvoi = {
             "Semaine 45 : du lundi 3 au vendredi 7 novembre": ["974-La Réunion", "971-Guadeloupe", "973-Guyane", "976-Mayotte", "978-Saint-Martin", "972-Martinique", "93-Seine-Saint-Denis", "38000-Grenoble 1", "03-Allier", "58-Nièvre", "36-Indre", "08-Ardennes", "52-Haute-Marne", "67000-Strasbourg 1", "10-Aube", "88-Vosges", "62-Pas-de-Calais", "02-Aisne", "59-Nord", "80-Somme", "61-Orne", "23-Creuse", "47-Lot-et-Garonne", "24-Dordogne", "11-Aude", "66-Pyrénées-Orientales", "09-Ariège", "30-Gard", "82-Tarn-et-Garonne", "65-Hautes-Pyrénées", "84-Vaucluse"],
             "Semaine 46 : du lundi 10 au vendredi 14 novembre": ["42-Loire", "07-Ardèche", "15-Cantal", "43-Haute-Loire", "26-Drôme", "38100-Grenoble 2", "71-Saône-et-Loire", "70-Haute-Saône", "89-Yonne", "22-Côtes d'Armor", "18-Cher", "41-Loir-et-Cher", "20-Corse", "67100-Strasbourg 2", "55-Meuse", "76-Seine-Maritime", "50-Manche", "16-Charente", "19-Corrèze", "87-Haute-Vienne", "79-Deux-Sèvres", "86-Vienne", "17-Charente-Maritime", "46-Lot", "34-Hérault", "48-Lozère", "81-Tarn", "12-Aveyron", "32-Gers", "53-Mayenne", "72-Sarthe", "49-Maine-et-Loire", "85-Vendée", "04-Alpes de Haute-Provence", "05-Hautes-Alpes"],
@@ -123,38 +132,48 @@
         const resultDate = document.getElementById('result-date');
 
         button.addEventListener('click', () => {
-            const selectedDept = selectElement.value;
-            
-            if (!selectedDept) {
-                resultTitle.textContent = "Veuillez sélectionner un département";
-                resultDate.textContent = "";
-                resultBox.className = "mt-6 p-5 rounded-[5px] text-center bg-yellow-100 text-yellow-800";
-                resultBox.classList.remove('hidden');
-                return;
-            }
+    const selectedDept = selectElement.value;
+    
+    if (!selectedDept) {
+        trackTool('error_no_selection'); // Tracking Erreur
+        resultTitle.textContent = "Veuillez sélectionner un département";
+        resultDate.textContent = "";
+        resultBox.className = "mt-6 p-5 rounded-[5px] text-center bg-yellow-100 text-yellow-800";
+        resultBox.classList.remove('hidden');
+        return;
+    }
 
-            const date = departementDateMap[selectedDept];
+    const date = departementDateMap[selectedDept];
 
-            if (date) {
-                // TRACKING GA4 via PostMessage
-                window.parent.postMessage({
-                    type: 'CALCULATEUR_CHEQUE_ENERGIE',
-                    action: 'click_verification',
-                    departement: selectedDept,
-                    resultat_semaine: date
-                }, '*');
+    if (date) {
+        // Tracking Succès avec données
+        trackTool('calculation_success', {
+            'selected_value': selectedDept,
+            'result_value': date
+        });
 
-                resultTitle.textContent = `Envoi estimé pour : ${formatDepartement(selectedDept)}`;
-                resultDate.textContent = date;
-                resultBox.className = "mt-6 p-5 rounded-[5px] text-center bg-[#E2E1FF] text-[#5A52FF]";
-                resultBox.classList.remove('hidden');
-            } else {
-                resultTitle.textContent = "Département non trouvé";
-                resultDate.textContent = "Veuillez réessayer.";
-                resultBox.className = "mt-6 p-5 rounded-[5px] text-center bg-red-100 text-red-800";
-                resultBox.classList.remove('hidden');
+        resultTitle.textContent = `Envoi estimé pour : ${formatDepartement(selectedDept)}`;
+        resultDate.textContent = date;
+        resultBox.className = "mt-6 p-5 rounded-[5px] text-center bg-[#E2E1FF] text-[#5A52FF]";
+        resultBox.classList.remove('hidden');
+    } else {
+        trackTool('error_not_found'); // Tracking Erreur technique
+        resultTitle.textContent = "Département non trouvé";
+        resultDate.textContent = "Veuillez réessayer.";
+        resultBox.className = "mt-6 p-5 rounded-[5px] text-center bg-red-100 text-red-800";
+        resultBox.classList.remove('hidden');
+    }
+});
+            const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                trackTool('tool_visible');
+                observer.unobserve(entry.target); // Ne tracker qu'une seule fois
             }
         });
+    }, { threshold: 0.5 });
+    
+    observer.observe(document.querySelector('.max-w-lg'));
     </script>
 </body>
 </html>
