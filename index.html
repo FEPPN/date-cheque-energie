@@ -29,7 +29,7 @@
 <body class="bg-white flex justify-center py-8 px-4">
 
     <!-- Carte principale avec rounded-[10px] -->
-    <div class="bg-white p-6 sm:p-8 rounded-[10px] shadow-lg w-full max-w-lg border border-gray-200">
+    <div class="bg-white p-6 sm:p-8 rounded-[10px] shadow-lg w-full max-w-lg border border-gray-200" id="main-card">
         
         <!-- Titre principal: 18px et couleur #5A52FF -->
         <h1 class="text-[18px] font-bold text-center text-[#5A52FF] mb-6">
@@ -189,24 +189,50 @@
             }
         });
 
+        // GESTION DU REDIMENSIONNEMENT DYNAMIQUE (IFRAME)
+        function sendHeightToParent() {
+            // Calcule la hauteur totale (carte + paddings)
+            const height = document.documentElement.scrollHeight;
+            window.parent.postMessage({
+                type: 'resize_iframe',
+                height: height
+            }, '*');
+        }
+
         // On attend que le DOM soit chargé pour être sûr de trouver l'élément
         window.addEventListener('DOMContentLoaded', () => {
             const toolContainer = document.querySelector('.max-w-lg');
             
+            // 1. Observer pour le tracking GTM
             if (toolContainer) {
                 const observer = new IntersectionObserver((entries) => {
                     entries.forEach(entry => {
                         if (entry.isIntersecting) {
-                            // On envoie tool_visible en tool_action pour ton setup universel GTM
                             trackTool('tool_visible'); 
                             observer.unobserve(entry.target);
                         }
                     });
-                }, { threshold: 0.5 }); // Déclenche à 50% de visibilité
+                }, { threshold: 0.5 });
 
                 observer.observe(toolContainer);
             }
+
+            // 2. Observer pour la hauteur de l'iframe
+            // Envoie la hauteur initiale
+            sendHeightToParent();
+
+            // Surveille les changements de taille du conteneur principal (ex: apparition du résultat)
+            if (toolContainer) {
+                const resizeObserver = new ResizeObserver(() => {
+                    sendHeightToParent();
+                });
+                resizeObserver.observe(toolContainer);
+                resizeObserver.observe(document.body);
+            }
         });
+
+        // Envoie la hauteur si la fenêtre est redimensionnée par l'utilisateur
+        window.addEventListener('resize', sendHeightToParent);
     </script>
 </body>
 </html>
