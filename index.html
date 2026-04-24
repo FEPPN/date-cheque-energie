@@ -4,99 +4,198 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calendrier Chèque Énergie 2026</title>
-    <!-- Chargement de Tailwind CSS pour le style -->
-    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Police Avenir par défaut */
-        body {
-            font-family: "Avenir", "Inter", sans-serif; /* Ajout d'Inter comme fallback */
+        /* Variables de design pour maintenir la cohérence sans Tailwind JS */
+        :root {
+            --primary: #5A52FF;
+            --primary-hover: #4a42e0;
+            --text-dark: #212430;
+            --text-gray: #4b5563;
+            --bg-light: #f9fafb;
+            --border-color: #e5e7eb;
+            --success-bg: #E2E1FF;
+            --warning-bg: #fef3c7;
+            --error-bg: #fee2e2;
         }
-        
-        /* Correction pour la flèche du sélecteur non stylisée par Tailwind */
+
+        /* Stack de polices système (chargement instantané) */
+        body {
+            font-family: "Avenir", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: white;
+            display: flex;
+            justify-content: center;
+            padding: 2rem 1rem;
+            margin: 0;
+            color: var(--text-dark);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+            border: 1px solid var(--border-color);
+            box-sizing: border-box;
+        }
+
+        h1 {
+            font-size: 18px;
+            font-weight: 700;
+            text-align: center;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+        }
+
+        p.intro {
+            font-size: 16px;
+            color: var(--text-gray);
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
         select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            font-size: 16px;
+            background-color: white;
+            appearance: none;
             background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
-            background-position: right 0.5rem center;
+            background-position: right 0.75rem center;
             background-repeat: no-repeat;
             background-size: 1.5em 1.5em;
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            appearance: none;
-            padding-right: 2.5rem; /* Espace pour la flèche */
+            cursor: pointer;
+            box-sizing: border-box;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: var(--primary);
+            ring: 2px var(--primary);
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            max-width: 300px;
+            margin: 1.5rem auto 0;
+            background-color: var(--primary);
+            color: white;
+            font-weight: 700;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        button:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .result-box {
+            margin-top: 1.5rem;
+            padding: 1.25rem;
+            border-radius: 5px;
+            text-align: center;
+            display: none;
+        }
+
+        .info-section {
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .info-section h4 {
+            font-size: 18px;
+            margin-bottom: 0.5rem;
+        }
+
+        ul {
+            padding-left: 1.2rem;
+            font-size: 16px;
+            color: var(--text-gray);
+        }
+
+        li {
+            margin-bottom: 0.25rem;
+        }
+
+        .source {
+            margin-top: 1rem;
+            font-size: 12px;
+            color: #9ca3af;
+            font-style: italic;
+            text-align: right;
+        }
+
+        /* Classes dynamiques pour JS */
+        .bg-success { display: block; background-color: var(--success-bg); color: var(--primary); }
+        .bg-warning { display: block; background-color: var(--warning-bg); color: #92400e; }
+        .bg-error { display: block; background-color: var(--error-bg); color: #b91c1c; }
+
+        @media (max-width: 640px) {
+            button { max-width: 100%; }
         }
     </style>
 </head>
-<!-- Modification : fond blanc, centré horizontalement (flex justify-center), padding vertical (py-8) -->
-<body class="bg-white flex justify-center py-8 px-4">
+<body>
 
-    <!-- Carte principale avec rounded-[10px] -->
-    <div class="bg-white p-6 sm:p-8 rounded-[10px] shadow-lg w-full max-w-lg border border-gray-200" id="main-card">
+    <div class="card" id="main-card">
+        <h1>Calendrier d'envoi du Chèque Énergie 2026</h1>
         
-        <!-- Titre principal: 18px et couleur #5A52FF -->
-        <h1 class="text-[18px] font-bold text-center text-[#5A52FF] mb-6">
-            Calendrier d'envoi du Chèque Énergie 2026
-        </h1>
-        
-        <!-- Paragraphe: 16px -->
-        <p class="text-gray-700 text-center mb-6 text-[16px]">
+        <p class="intro">
             Sélectionnez votre département ou votre zone pour connaître la semaine d'envoi estimée.
         </p>
 
-        <!-- Sélecteur de département -->
-        <div class="mb-4">
-            <!-- Label: 16px et couleur #212430 -->
-            <label for="departement-select" class="block text-[16px] font-medium text-[#212430] mb-2">
-                Votre département :
-            </label>
-            <!-- Select: 16px, rounded-[5px] et couleurs focus personnalisées -->
-            <select id="departement-select" class="w-full p-3 border border-gray-300 rounded-[5px] shadow-sm text-[16px] focus:ring-[#5A52FF] focus:border-[#5A52FF]">
+        <div class="form-group">
+            <label for="departement-select">Votre département :</label>
+            <select id="departement-select">
                 <option value="">-- Choisissez un département --</option>
-                <!-- Les options seront ajoutées ici par JavaScript -->
             </select>
         </div>
 
-        <!-- Bouton: 16px, rounded-[5px], p-3 (padding), w-[300px] centré et couleur #5A52FF -->
-        <button id="check-button" class="w-full sm:w-[300px] mx-auto block bg-[#5A52FF] text-white font-bold p-3 rounded-[5px] text-[16px] hover:bg-[#4a42e0] transition-colors duration-200 shadow-md">
+        <button id="check-button">
             Vérifier la date d'envoi
         </button>
 
-        <!-- Zone de résultat: rounded-[5px] -->
-        <div id="result-box" class="mt-6 p-5 rounded-[5px] text-center hidden">
-            <!-- Titre résultat: 18px -->
-            <h3 id="result-title" class="text-[18px] font-semibold"></h3>
-            <!-- Date résultat: 16px -->
-            <p id="result-date" class="text-[16px]"></p>
+        <div id="result-box" class="result-box">
+            <h3 id="result-title" style="font-size:18px; margin:0 0 5px 0;"></h3>
+            <p id="result-date" style="font-size:16px; margin:0;"></p>
         </div>
 
-        <!-- Notes importantes -->
-        <div class="mt-8 pt-4 border-t border-gray-200">
-            <!-- Titre info: 18px et couleur #212430 -->
-            <h4 class="font-semibold text-[18px] text-[#212430] mb-2">Informations importantes :</h4>
-            <!-- Liste info: 16px -->
-            <ul class="list-disc list-inside text-[16px] text-gray-700 space-y-1">
+        <div class="info-section">
+            <h4>Informations importantes :</h4>
+            <ul>
                 <li>Ce calendrier concerne les envois de chèques énergie 2026 au format papier (hors pré-affectation).</li>
                 <li>Les délais de réception au domicile sont en général compris entre <strong>2 à 4 jours</strong> après la date d'envoi.</li>
-                <li>Les envois pour Grenoble et Strasbourg sont étalés sur plusieurs semaines (choisissez la zone correspondante).</li>
+                <li>Les envois pour Grenoble et Strasbourg sont étalés sur plusieurs semaines.</li>
             </ul>
         </div>
 
-        <!-- Ajout de la source (avec majuscules) -->
-        <p class="mt-4 text-sm text-gray-500 italic text-right">
-            Source : Ministère de l'Économie
-        </p>
-
+        <p class="source">Source : Ministère de l'Économie</p>
     </div>
 
     <script>
-        function trackTool(actionName, extraData = {}) {
-            const nom_du_tool = "tool-date-cheque-energie";
-            window.parent.postMessage({
-                'event': 'tool_interaction',
-                'tool_name': nom_du_tool, 
-                'tool_action': actionName,
-                ...extraData
-            }, '*');
-        }
-
+        // Données statiques
         const datesEnvoi = {
             "Semaine 14 : du mercredi 1er au vendredi 3 avril": [
                 "974-La Réunion", "971-Guadeloupe", "973-Guyane", "976-Mayotte", "972-Martinique", 
@@ -127,28 +226,45 @@
             ]
         };
 
-        function formatDepartement(deptString) {
-            const match = deptString.match(/^([\d\w]+)-(.*)$/);
-            return (match && match.length === 3) ? `${match[1]} - ${match[2]}` : deptString;
-        }
-
-        const departementDateMap = {};
-        const tousLesDepartements = [];
-        for (const [date, departements] of Object.entries(datesEnvoi)) {
-            for (const dept of departements) {
-                departementDateMap[dept] = date;
-                tousLesDepartements.push(dept);
+        function trackTool(actionName, extraData = {}) {
+            const nom_du_tool = "tool-date-cheque-energie";
+            if (window.parent) {
+                window.parent.postMessage({
+                    'event': 'tool_interaction',
+                    'tool_name': nom_du_tool, 
+                    'tool_action': actionName,
+                    ...extraData
+                }, '*');
             }
         }
-        tousLesDepartements.sort();
+
+        function formatDepartement(deptString) {
+            const match = deptString.match(/^([\d\w]+)-(.*)$/);
+            return (match) ? `${match[1]} - ${match[2]}` : deptString;
+        }
 
         const selectElement = document.getElementById('departement-select');
-        tousLesDepartements.forEach(dept => {
-            const option = document.createElement('option');
-            option.value = dept;
-            option.textContent = formatDepartement(dept);
-            selectElement.appendChild(option);
+        const deptDateMap = {};
+        const allDepts = [];
+
+        // Pré-calcul de la map pour une recherche instantanée
+        for (const [date, depts] of Object.entries(datesEnvoi)) {
+            for (const d of depts) {
+                deptDateMap[d] = date;
+                allDepts.push(d);
+            }
+        }
+        allDepts.sort();
+
+        // Remplissage optimisé du select
+        const fragment = document.createDocumentFragment();
+        allDepts.forEach(dept => {
+            const opt = document.createElement('option');
+            opt.value = dept;
+            opt.textContent = formatDepartement(dept);
+            fragment.appendChild(opt);
         });
+        selectElement.appendChild(fragment);
 
         const button = document.getElementById('check-button');
         const resultBox = document.getElementById('result-box');
@@ -156,83 +272,45 @@
         const resultDate = document.getElementById('result-date');
 
         button.addEventListener('click', () => {
-            const selectedDept = selectElement.value;
-            
-            if (!selectedDept) {
-                trackTool('error_no_selection'); // Tracking Erreur
+            const val = selectElement.value;
+            resultBox.className = "result-box"; // Reset classes
+
+            if (!val) {
+                trackTool('error_no_selection');
                 resultTitle.textContent = "Veuillez sélectionner un département";
                 resultDate.textContent = "";
-                resultBox.className = "mt-6 p-5 rounded-[5px] text-center bg-yellow-100 text-yellow-800";
-                resultBox.classList.remove('hidden');
+                resultBox.classList.add('bg-warning');
                 return;
             }
 
-            const date = departementDateMap[selectedDept];
-
+            const date = deptDateMap[val];
             if (date) {
-                // Tracking Succès avec données
-                trackTool('calculation_success', {
-                    'selected_value': selectedDept,
-                    'result_value': date
-                });
-
-                resultTitle.textContent = `Envoi estimé pour : ${formatDepartement(selectedDept)}`;
+                trackTool('calculation_success', { 'selected_value': val, 'result_value': date });
+                resultTitle.textContent = `Envoi estimé pour : ${formatDepartement(val)}`;
                 resultDate.textContent = date;
-                resultBox.className = "mt-6 p-5 rounded-[5px] text-center bg-[#E2E1FF] text-[#5A52FF]";
-                resultBox.classList.remove('hidden');
+                resultBox.classList.add('bg-success');
             } else {
-                trackTool('error_not_found'); // Tracking Erreur technique
-                resultTitle.textContent = "Département non trouvé";
-                resultDate.textContent = "Veuillez réessayer.";
-                resultBox.className = "mt-6 p-5 rounded-[5px] text-center bg-red-100 text-red-800";
-                resultBox.classList.remove('hidden');
+                trackTool('error_not_found');
+                resultTitle.textContent = "Erreur technique";
+                resultBox.classList.add('bg-error');
             }
         });
 
-        // GESTION DU REDIMENSIONNEMENT DYNAMIQUE (IFRAME)
-        function sendHeightToParent() {
-            // Calcule la hauteur totale (carte + paddings)
+        // Communication Iframe
+        function sendHeight() {
             const height = document.documentElement.scrollHeight;
-            window.parent.postMessage({
-                type: 'resize_iframe',
-                height: height
-            }, '*');
+            window.parent.postMessage({ type: 'resize_iframe', height: height }, '*');
         }
 
-        // On attend que le DOM soit chargé pour être sûr de trouver l'élément
-        window.addEventListener('DOMContentLoaded', () => {
-            const toolContainer = document.querySelector('.max-w-lg');
+        window.addEventListener('load', () => {
+            sendHeight();
+            trackTool('tool_visible');
             
-            // 1. Observer pour le tracking GTM
-            if (toolContainer) {
-                const observer = new IntersectionObserver((entries) => {
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting) {
-                            trackTool('tool_visible'); 
-                            observer.unobserve(entry.target);
-                        }
-                    });
-                }, { threshold: 0.5 });
-
-                observer.observe(toolContainer);
-            }
-
-            // 2. Observer pour la hauteur de l'iframe
-            // Envoie la hauteur initiale
-            sendHeightToParent();
-
-            // Surveille les changements de taille du conteneur principal (ex: apparition du résultat)
-            if (toolContainer) {
-                const resizeObserver = new ResizeObserver(() => {
-                    sendHeightToParent();
-                });
-                resizeObserver.observe(toolContainer);
-                resizeObserver.observe(document.body);
+            // Observer pour les changements de taille
+            if (window.ResizeObserver) {
+                new ResizeObserver(sendHeight).observe(document.body);
             }
         });
-
-        // Envoie la hauteur si la fenêtre est redimensionnée par l'utilisateur
-        window.addEventListener('resize', sendHeightToParent);
     </script>
 </body>
 </html>
