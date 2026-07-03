@@ -168,12 +168,12 @@
 
         <div class="form-group">
             <label for="departement-select">Votre département :</label>
-            <select id="departement-select">
+            <select id="departement-select" onchange="trackTool('select_departement')">
                 <option value="">-- Choisissez un département --</option>
             </select>
         </div>
 
-        <button id="check-button">
+        <button id="check-button" onclick="trackTool('select_bouton_verifier')">
             Vérifier la date d'envoi
         </button>
 
@@ -226,18 +226,6 @@
             ]
         };
 
-        function trackTool(actionName, extraData = {}) {
-            const nom_du_tool = "tool-date-cheque-energie";
-            if (window.parent) {
-                window.parent.postMessage({
-                    'event': 'tool_interaction',
-                    'tool_name': nom_du_tool, 
-                    'tool_action': actionName,
-                    ...extraData
-                }, '*');
-            }
-        }
-
         function formatDepartement(deptString) {
             const match = deptString.match(/^([\d\w]+)-(.*)$/);
             return (match) ? `${match[1]} - ${match[2]}` : deptString;
@@ -276,7 +264,7 @@
             resultBox.className = "result-box"; // Reset classes
 
             if (!val) {
-                trackTool('error_no_selection');
+                trackTool('error_aucune_selection');
                 resultTitle.textContent = "Veuillez sélectionner un département";
                 resultDate.textContent = "";
                 resultBox.classList.add('bg-warning');
@@ -285,12 +273,12 @@
 
             const date = deptDateMap[val];
             if (date) {
-                trackTool('calculation_success', { 'selected_value': val, 'result_value': date });
+                trackTool('view_result_date');
                 resultTitle.textContent = `Envoi estimé pour : ${formatDepartement(val)}`;
                 resultDate.textContent = date;
                 resultBox.classList.add('bg-success');
             } else {
-                trackTool('error_not_found');
+                trackTool('error_non_trouve');
                 resultTitle.textContent = "Erreur technique";
                 resultBox.classList.add('bg-error');
             }
@@ -311,6 +299,39 @@
                 new ResizeObserver(sendHeight).observe(document.body);
             }
         });
+
+        // --- NOUVEAU SCRIPT DATA LAYER 2.0 ---
+        function trackTool(actionName, customParams = {}) {
+            const nom_du_tool = "date-cheque-energie"; 
+            let gtmEvent = "form"; 
+            if (actionName === "tool_visible") { gtmEvent = "impression"; } 
+            else if (customParams.is_cta || (actionName && actionName.includes("click_cta"))) { gtmEvent = "click_cta"; } 
+            else if (customParams.is_click || (actionName && actionName.includes("reset"))) { gtmEvent = "click"; }
+
+            let eventCategory = "engagement";
+            let eventType = customParams.event_type || 'interaction';
+            if (actionName === "tool_visible" || (actionName && actionName.includes("view_result"))) { eventType = "impression"; }
+
+            let payload = {
+                'event_system': 'papernest_tool',
+                'event': gtmEvent,
+                'event_component': nom_du_tool,
+                'event_category': eventCategory,
+                'event_type': eventType,
+                'event_position': 'content'
+            };
+
+            if (actionName && actionName !== "tool_visible") { payload.event_step = actionName; }
+
+            if (gtmEvent === "form") {
+                if (customParams.form_type === "none" || (actionName && (actionName.includes("view_result") || actionName.includes("tooltip")))) {
+                    // Reste vide volontairement
+                } else {
+                    payload.event_form_type = customParams.form_type || "select"; 
+                }
+            }
+            window.parent.postMessage(payload, '*');
+        }
     </script>
 </body>
 </html>
